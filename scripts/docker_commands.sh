@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 docker run -it wurstmeister/kafka /bin/bash
 
