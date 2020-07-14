@@ -1,11 +1,12 @@
+#!/bin/bash
 
+### docker-compose -p sdc up zookeeper 
+### docker-compose up kafka
+docker-compose -p sdc up
+docker-compose -p wdc up
 
-docker-compose up zookeeper
-docker-compose up kafka
-docker-compose up
-
-docker-compose scale zookeeper=3
-docker-compose scale kafka=3
+docker-compose -p sdc scale zookeeper=3 kafka=3
+docker-compose -p wdc scale zookeeper=3 kafka=3
 
 docker ps -a
 docker inspect kafka-playground_kafka_1
