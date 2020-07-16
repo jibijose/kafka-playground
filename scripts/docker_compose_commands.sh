@@ -1,21 +1,23 @@
 #!/bin/bash
 
-### docker-compose -p sdc up zookeeper 
-### docker-compose up kafka
-docker-compose -p sdc up
-docker-compose -p wdc up
+docker-compose -p sdc scale zookeeper=1
+docker-compose -p sdc scale kafka=3
 
-docker-compose -p sdc scale zookeeper=3 kafka=3
-docker-compose -p wdc scale zookeeper=3 kafka=3
-
-docker ps -a
-docker inspect kafka-playground_kafka_1
-docker inspect --format '{{ .NetworkSettings.IPAddress }}' kafka-playground_kafka_1
+HOST_IP=192.168.1.8
+TOPIC_NAME=testtopic
+ZOOKEEPER_PORT="$(docker-compose -p sdc port zookeeper 2181 | cut -d':' -f2)"
+KAFKA_PORT="$(docker-compose -p sdc port kafka 9092 | cut -d':' -f2)"
+#$KAFKA_HOME/bin/kafka-topics --delete --topic $TOPIC_NAME --bootstrap-server $HOST_IP:$KAFKA_PORT
 
 
-./kafka-console-producer.sh --topic test-topic-1 --bootstrap-server 192.168.1.8:9092
-./kafka-console-consumer.sh --topic test-topic-1 --bootstrap-server 192.168.1.8:9092
+$KAFKA_HOME/bin/kafka-run-class kafka.tools.GetOffsetShell --broker-list $HOST_IP:$KAFKA_PORT --topic $TOPIC_NAME --time -1
+$KAFKA_HOME/bin/kafka-consumer-groups --bootstrap-server $HOST_IP:$KAFKA_PORT  --describe --all-groups
 
 
-./kafka-console-producer.sh --topic test-topic-1 --bootstrap-server 172.23.0.1:32771
-./kafka-console-consumer.sh --topic test-topic-1 --bootstrap-server 172.23.0.1:32771
+$KAFKA_HOME/bin/kafka-topics --alter --bootstrap-server $HOST_IP:$KAFKA_PORT --topic $TOPIC_NAME --partitions 5
+$KAFKA_HOME/bin/kafka-topics --alter --bootstrap-server $HOST_IP:$KAFKA_PORT --topic $TOPIC_NAME --partitions 5  --replication-factor 1
+$KAFKA_HOME/bin/kafka-topics --alter --bootstrap-server $HOST_IP:$KAFKA_PORT --topic $TOPIC_NAME --partitions 5
+
+#https://cwiki.apache.org/confluence/display/KAFKA/Replication+tools
+#https://medium.com/@marcelo.hossomi/running-kafka-in-docker-machine-64d1501d6f0b
+
