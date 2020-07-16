@@ -1,7 +1,4 @@
-#!/bin/bash
 
-docker-compose -p sdc scale zookeeper=1
-docker-compose -p sdc scale kafka=3
 
 HOST_IP=192.168.1.8
 TOPIC_NAME=testtopic
@@ -20,4 +17,6 @@ $KAFKA_HOME/bin/kafka-topics --alter --bootstrap-server $HOST_IP:$KAFKA_PORT --t
 
 #https://cwiki.apache.org/confluence/display/KAFKA/Replication+tools
 #https://medium.com/@marcelo.hossomi/running-kafka-in-docker-machine-64d1501d6f0b
+
+#https://github.com/docker-solr/docker-solr/issues/52
 

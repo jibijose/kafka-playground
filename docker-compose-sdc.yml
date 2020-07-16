@@ -1,25 +1,20 @@
 version: '3'
 services:
-  zookeeper:
-    image: ${IMAGE_ZOOKEEPER}
-    ports:
-      - "2181"
   kafka:
     image: ${IMAGE_KAFKA}
     ports:
       - "9092"
-    depends_on:
-      - zookeeper
     environment:
       #KAFKA_LOG_DIRS: /kafka
       #KAFKA_BROKER_ID: 1
       #KAFKA_CREATE_TOPICS: test-topic-1:1:2,test-topic-2:1:2,test-topic-3:1:2
       KAFKA_ADVERTISED_HOST_NAME: ${HOST_IP}
       #HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper
+      KAFKA_ZOOKEEPER_CONNECT: ${HOST_IP}
       #KAFKA_LOG_RETENTION_HOURS: "168"
       #KAFKA_LOG_RETENTION_MS: 3000
       #KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 3000
       #KAFKA_LOG_RETENTION_BYTES: "100000000"
+      KAFKA_BROKER_RACK: sdc
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

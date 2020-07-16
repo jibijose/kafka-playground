@@ -1,0 +1,6 @@
+version: '3'
+services:
+  zookeeper:
+    image: ${IMAGE_ZOOKEEPER}
+    ports:
+      - "2181:2181"
