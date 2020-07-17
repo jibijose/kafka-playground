@@ -4,13 +4,17 @@ services:
     image: ${IMAGE_KAFKA}
     ports:
       - "9092"
+    depends_on: 
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
     environment:
       #KAFKA_LOG_DIRS: /kafka
       #KAFKA_BROKER_ID: 1
       #KAFKA_CREATE_TOPICS: test-topic-1:1:2,test-topic-2:1:2,test-topic-3:1:2
       KAFKA_ADVERTISED_HOST_NAME: ${HOST_IP}
       #HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
-      KAFKA_ZOOKEEPER_CONNECT: ${HOST_IP}
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2181,zookeeper3:2181"
       #KAFKA_LOG_RETENTION_HOURS: "168"
       #KAFKA_LOG_RETENTION_MS: 3000
       #KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 3000
@@ -18,3 +22,24 @@ services:
       KAFKA_BROKER_RACK: wdc
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  zookeeper1:
+    image: ${IMAGE_ZOOKEEPER}
+    ports:
+      - "4181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888
+  zookeeper2:
+    image: ${IMAGE_ZOOKEEPER}
+    ports:
+      - "4182:2181"
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888
+  zookeeper3:
+    image: ${IMAGE_ZOOKEEPER}
+    ports:
+      - "4183:2181"
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888

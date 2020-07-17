@@ -1,11 +1,24 @@
 #!/bin/bash
 
-HOST_IP=192.168.1.8
-PROFILE=sdc
-ZOOKEEPER_PORT="$(docker-compose -f docker-compose-zookeeper.yml -p zookeeper port zookeeper 2181 | cut -d':' -f2)"
-KAFKA_PORT_SDC="$(docker-compose -f docker-compose-sdc.yml -p sdc port kafka 9092 | cut -d':' -f2)"
-KAFKA_PORT_WDC="$(docker-compose -f docker-compose-wdc.yml -p wdc port kafka 9092 | cut -d':' -f2)"
-TOPIC_NAME=testtopic
+if [ "$#" -ne 3 ]
+then
+    echo "$0 host_ip profile topic_name"
+    exit 1
+fi
+
+HOST_IP=$1
+PROFILE=$2
+TOPIC_NAME=$3
+
+CONTAINERS=$(docker ps | grep $PROFILE | grep 9092 | awk '{print $1}')
+BROKERS_LIST=$(for CONTAINER in ${CONTAINERS}; do docker port "$CONTAINER" 9092 | sed -e "s/0.0.0.0:/$HOST_IP:/g"; done)
+BROKERS_LIST=$(echo $BROKERS_LIST | sed 's/ /,/g')
+echo "BROKERS_LIST = $BROKERS_LIST"
+
+CONTAINERS=$(docker ps | grep $PROFILE | grep 2181 | awk '{print $1}')
+ZK_LIST=$(for CONTAINER in ${CONTAINERS}; do docker port "$CONTAINER" 2181 | sed -e "s/0.0.0.0:/$HOST_IP:/g"; done)
+ZK_LIST=$(echo $ZK_LIST | sed 's/ /,/g')
+echo "ZK_LIST = $ZK_LIST"
 
 function check_kafka_status_ok() {
     KAFKA_INDEX=$1
@@ -14,24 +27,24 @@ function check_kafka_status_ok() {
     echo "Kafka[$KAFKA_INDEX] $HOST_IP:$KAFKA_PORT status is $STATUS"
 }
 
-num_of_kafkas=$(docker ps -a | grep "_kafka_" | wc -l)
-zk_listed_kafkas=$($KAFKA_HOME/bin/zookeeper-shell $HOST_IP:$ZOOKEEPER_PORT ls /brokers/ids | grep "\[*\]")
+num_of_kafkas=$(docker ps -a | grep "$PROFILE"_kafka_[0-9] | wc -l)
+zk_listed_kafkas=$($KAFKA_HOME/bin/zookeeper-shell $ZK_LIST ls /brokers/ids | grep "\[*\]")
 
 echo "Number of kafka docker instances $num_of_kafkas"
 echo "Kafka brokers listed in zookeeper $zk_listed_kafkas"
 echo
 
 echo  "All topics list"
-$KAFKA_HOME/bin/kafka-topics --list --bootstrap-server $HOST_IP:$KAFKA_PORT_SDC,$HOST_IP:$KAFKA_PORT_WDC
+$KAFKA_HOME/bin/kafka-topics --list --bootstrap-server $BROKERS_LIST
 echo
 echo  "All brokers list"
-$KAFKA_HOME/bin/kafka-topics --describe --topic $TOPIC_NAME --bootstrap-server $HOST_IP:$KAFKA_PORT_SDC,$HOST_IP:$KAFKA_PORT_WDC
+$KAFKA_HOME/bin/kafka-topics --describe --topic $TOPIC_NAME --bootstrap-server $BROKERS_LIST
 echo
 
 echo  "Brokers list with unavailable partitions"
-$KAFKA_HOME/bin/kafka-topics --describe --topic $TOPIC_NAME --bootstrap-server $HOST_IP:$KAFKA_PORT_SDC,$HOST_IP:$KAFKA_PORT_WDC --unavailable-partitions
+$KAFKA_HOME/bin/kafka-topics --describe --topic $TOPIC_NAME --bootstrap-server $BROKERS_LIST --unavailable-partitions
 echo
 
 echo  "Brokers list with under replicated partitions"
-$KAFKA_HOME/bin/kafka-topics --describe --topic $TOPIC_NAME --bootstrap-server $HOST_IP:$KAFKA_PORT_SDC,$HOST_IP:$KAFKA_PORT_WDC --under-replicated-partitions
+$KAFKA_HOME/bin/kafka-topics --describe --topic $TOPIC_NAME --bootstrap-server $BROKERS_LIST --under-replicated-partitions
 echo
