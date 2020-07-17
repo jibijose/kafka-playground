@@ -23,6 +23,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   zookeeper1:
+    container_name: ${PROFILE}_zookeeper1
     image: ${IMAGE_ZOOKEEPER}
     ports:
       - "3181:2181"
@@ -30,6 +31,7 @@ services:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888
   zookeeper2:
+    container_name: ${PROFILE}_zookeeper2
     image: ${IMAGE_ZOOKEEPER}
     ports:
       - "3182:2181"
@@ -37,6 +39,7 @@ services:
       ZOO_MY_ID: 2
       ZOO_SERVERS: server.1=zookeeper1:2888:3888 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2888:3888
   zookeeper3:
+    container_name: ${PROFILE}_zookeeper3
     image: ${IMAGE_ZOOKEEPER}
     ports:
       - "3183:2181"

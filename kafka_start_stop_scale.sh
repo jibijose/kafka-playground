@@ -14,6 +14,8 @@ MODE=$1
 PROFILE=$2
 NODES=$3
 
+export PROFILE
+
 case "$MODE" in
    "start")
       docker-compose -f docker-compose-$PROFILE.yml -p $PROFILE up
