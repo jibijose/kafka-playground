@@ -27,13 +27,13 @@ then
     rm -rf wdc_*_consumer.properties
     cat ./templates/consumer.properties | sed "s/CONSUMER_BROKER_LIST/$SDC_BROKERS_LIST/g" >> wdc_mm2_consumer.properties
     cat ./templates/producer.properties | sed "s/PRODUCER_BROKER_LIST/$WDC_BROKERS_LIST/g" >> wdc_mm2_producer.properties
-    $KAFKA_HOME/bin/kafka-mirror-maker --producer.config wdc_mm2_producer.properties --consumer.config wdc_mm2_consumer.properties --whitelist "$TOPIC_NAME"
+    $KAFKA_HOME/bin/kafka-mirror-maker --producer.config wdc_mm2_producer.properties --consumer.config wdc_mm2_consumer.properties --whitelist $TOPIC_NAME
 elif [ "$PROFILE" == "sdc" ]
 then
     rm -rf sdc_*_consumer.properties
     cat ./templates/consumer.properties | sed "s/CONSUMER_BROKER_LIST/$WDC_BROKERS_LIST/g" >> sdc_mm2_consumer.properties
     cat ./templates/producer.properties | sed "s/PRODUCER_BROKER_LIST/$SDC_BROKERS_LIST/g" >> sdc_mm2_producer.properties
-    $KAFKA_HOME/bin/kafka-mirror-maker --producer.config sdc_mm2_producer.properties --consumer.config sdc_mm2_consumer.properties --whitelist "$TOPIC_NAME"
+    $KAFKA_HOME/bin/kafka-mirror-maker --producer.config sdc_mm2_producer.properties --consumer.config sdc_mm2_consumer.properties --whitelist $TOPIC_NAME
 fi
 
 

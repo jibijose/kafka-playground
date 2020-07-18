@@ -18,7 +18,7 @@ export PROFILE
 
 case "$MODE" in
    "start")
-      docker-compose -f docker-compose-$PROFILE.yml -p $PROFILE up
+      docker-compose -f docker-compose-$PROFILE.yml -p $PROFILE up -d
       ;;
    "stop")
       docker-compose -f docker-compose-$PROFILE.yml -p $PROFILE down

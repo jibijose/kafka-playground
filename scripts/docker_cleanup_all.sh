@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pkill -f "java"
+
 numofps=`docker ps -aq | wc  -l`
 if [ $numofps -ne 0 ]
 then

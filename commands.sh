@@ -2,22 +2,9 @@
 exit
 echo "******************************************************************************"
 
-./scripts/docker_cleanup_all.sh
 
-./kafka_start_stop_scale.sh start sdc
-./kafka_start_stop_scale.sh start wdc
-
-
-./kafka_start_stop_scale.sh scale sdc 3
-./kafka_start_stop_scale.sh scale wdc 3
-./scripts/createTopic.sh 192.168.1.8 sdc sdc.topic 2 6
-./scripts/createTopic.sh 192.168.1.8 sdc wdc.topic 2 6
-./scripts/createTopic.sh 192.168.1.8 wdc wdc.topic 2 6
-./scripts/createTopic.sh 192.168.1.8 wdc sdc.topic 2 6
-
-
-
-./startMirrorMaker2.sh 192.168.1.8  sdc wdc.topic 
+./startProducer.sh 192.168.1.8 sdc sdc.topic
+./startConsumer.sh 192.168.1.8 wdc sdc.topic
 
 ./scripts/kafka_status.sh 192.168.1.8 sdc sdc.topic
 ./scripts/kafka_status.sh 192.168.1.8 wdc wdc.topic
