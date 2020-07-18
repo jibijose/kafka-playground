@@ -1,11 +1,19 @@
 #!/bin/bash
 
-HOST_IP=192.168.1.8
-TOPIC_NAME=testtopic
-REPLICATION_FACTOR=1
-PARTITIONS=1
+if [ "$#" -ne 3 ]
+then
+    echo "$0 host_ip profile topic_name"
+    exit 1
+fi
 
-KAFKA_PORT="$(docker-compose -p sdc port kafka 9092 | cut -d':' -f2)"
-echo "Kafka broker is $HOST_IP:$KAFKA_PORT"
-$KAFKA_HOME/bin/kafka-console-producer --topic $TOPIC_NAME --bootstrap-server $HOST_IP:$KAFKA_PORT
+HOST_IP=$1
+PROFILE=$2
+TOPIC_NAME=$3
+
+CONTAINERS=$(docker ps | grep $PROFILE | grep 9092 | awk '{print $1}')
+BROKERS_LIST=$(for CONTAINER in ${CONTAINERS}; do docker port "$CONTAINER" 9092 | sed -e "s/0.0.0.0:/$HOST_IP:/g"; done)
+BROKERS_LIST=$(echo $BROKERS_LIST | sed 's/ /,/g')
+echo "BROKERS_LIST = $BROKERS_LIST"
+
+$KAFKA_HOME/bin/kafka-console-producer --topic $TOPIC_NAME --bootstrap-server $BROKERS_LIST
 echo "******************************************************************************************"

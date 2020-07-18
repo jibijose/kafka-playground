@@ -16,9 +16,14 @@ echo "**************************************************************************
 ./scripts/createTopic.sh 192.168.1.8 wdc sdc.topic 2 6
 
 
+
+$KAFKA_HOME/bin/kafka-mirror-maker --producer.config producer.properties --consumer.config consumer.properties --whitelist "sdc\.topic" 
+
 ./scripts/kafka_status.sh 192.168.1.8 sdc sdc.topic
 ./scripts/kafka_status.sh 192.168.1.8 wdc wdc.topic
 ./scripts/rebalanceKafka.sh 192.168.1.8  sdc sdc.topic
+
+
 
 
 echo "******************************************************************************"
@@ -48,5 +53,14 @@ $KAFKA_HOME/bin/kafka-topics --alter --bootstrap-server $HOST_IP:$KAFKA_PORT --t
 
 #https://www.altoros.com/blog/multi-cluster-deployment-options-for-apache-kafka-pros-and-cons/
 #https://gist.github.com/dongjinleekr/d24e3d0c7f92ac0f80c87218f1f5a02b
+https://github.com/tmcgrath/kafka-streams-java
 
+
+https://blog.cloudera.com/a-look-inside-kafka-mirrormaker-2/
+https://dzone.com/articles/mirror-maker-v20
+https://medium.com/@amalaruja/running-apache-kafka-mirror-maker-on-kubernetes-229bc2ae7084
+https://www.instaclustr.com/support/documentation/kafka/kafka-cluster-operations/setting-up-mirror-maker/
 echo "******************************************************************************"
+
+
+ 
