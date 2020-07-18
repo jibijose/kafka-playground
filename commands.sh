@@ -4,6 +4,8 @@ echo "**************************************************************************
 
 
 ./startProducer.sh 192.168.1.8 sdc sdc.topic
+./startProducer.sh 192.168.1.8 wdc wdc.topic
+
 ./startConsumer.sh 192.168.1.8 wdc sdc.topic
 
 ./scripts/kafka_status.sh 192.168.1.8 sdc sdc.topic
