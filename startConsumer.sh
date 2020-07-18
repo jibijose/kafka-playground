@@ -16,5 +16,6 @@ BROKERS_LIST=$(for CONTAINER in ${CONTAINERS}; do docker port "$CONTAINER" 9092 
 BROKERS_LIST=$(echo $BROKERS_LIST | sed 's/ /,/g')
 echo "BROKERS_LIST = $BROKERS_LIST"
 
-$KAFKA_HOME/bin/kafka-console-consumer --topic $TOPIC_NAME --bootstrap-server $BROKERS_LIST --group $CONSUMER_GROUP
+#$KAFKA_HOME/bin/kafka-console-consumer --topic $TOPIC_NAME --bootstrap-server $BROKERS_LIST --group $CONSUMER_GROUP
+$KAFKA_HOME/bin/kafka-console-consumer --bootstrap-server $BROKERS_LIST --group $CONSUMER_GROUP --whitelist 'sdc\.topic|wdc\.topic'
 echo "******************************************************************************************"

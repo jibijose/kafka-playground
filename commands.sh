@@ -17,7 +17,7 @@ echo "**************************************************************************
 
 
 
-$KAFKA_HOME/bin/kafka-mirror-maker --producer.config producer.properties --consumer.config consumer.properties --whitelist "sdc\.topic" 
+./startMirrorMaker2.sh 192.168.1.8  sdc wdc.topic 
 
 ./scripts/kafka_status.sh 192.168.1.8 sdc sdc.topic
 ./scripts/kafka_status.sh 192.168.1.8 wdc wdc.topic
