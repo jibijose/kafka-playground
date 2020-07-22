@@ -1,5 +1,6 @@
 #!/bin/bash
 
+./scripts/java_cleanup_all.sh
 ./scripts/docker_cleanup_all.sh
 echo "Cleaned java and docker"
 echo "******************************************************************"
