@@ -3,3 +3,8 @@
 **/*_*_consumer.properties
 **/*_*_producer.properties
 **/*_mm2.log
+
+**/.terraform
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/ssh_keys/*
